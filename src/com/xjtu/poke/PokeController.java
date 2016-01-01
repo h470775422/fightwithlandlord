@@ -1,8 +1,11 @@
 package com.xjtu.poke;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import org.junit.Test;
 
 public class PokeController 
 {
@@ -41,12 +44,6 @@ public class PokeController
 		}
 		
 		pokers.setPokerList(pokerList);
-//		for(int i=0;i<pokers.getPokerList().size();++i)
-//		{
-//			Card card = new Card();
-//			card = pokerList.get(i);
-//			System.out.println("ÅÆÖµ£º"+card.getValue()+"»¨É«£º"+card.getColor());
-//		}
 	}
 	
 	
