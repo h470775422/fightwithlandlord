@@ -1,6 +1,6 @@
 package com.xjtu.controller;
 
-public class ServerPlayerController {
+public class ServerPlayerController extends PlayerController{
 
 	
 	
@@ -30,4 +30,9 @@ public class ServerPlayerController {
 	 * 
 	 * }
 	 */
+	
+	
+	public void run(){
+		
+	}
 }

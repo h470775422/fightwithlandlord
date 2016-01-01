@@ -23,5 +23,12 @@ public class Card {
 		this.value = value;
 	}
 	
+	public boolean equals(Card card){
+		if(card != null && color == card.getColor() && value ==card.getValue()){
+			return true;
+		}
+		return false;
+	}
+	
 
 }

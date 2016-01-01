@@ -7,8 +7,8 @@ public abstract class Player {
 
 	private List<Card> hand = null;//手牌
 	private int score = 0;//积分
-	private boolean isLandlord = false;//是否地主
 	private boolean isCallLandlord = false;
+	private boolean isRedy = false;
 	
 	
 	public boolean isCallLandlord() {
@@ -29,12 +29,13 @@ public abstract class Player {
 	public void setScore(int score) {
 		this.score = score;
 	}
-	public boolean isLandlord() {
-		return isLandlord;
+	public boolean isRedy() {
+		return isRedy;
 	}
-	public void setLandlord(boolean isLandlord) {
-		this.isLandlord = isLandlord;
+	public void setRedy(boolean isRedy) {
+		this.isRedy = isRedy;
 	}
+
 	
 	
 	

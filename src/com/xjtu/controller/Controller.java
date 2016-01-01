@@ -4,7 +4,7 @@ public class Controller {
 
 	
 	public void initialGame(){
-		
+		PlayerController controller = new ServerPlayerController();
 	}
 	public void startGame(){
 	}

@@ -1,35 +1,78 @@
 package com.xjtu.controller;
 
+import com.xjtu.gamestate.GameState;
 import com.xjtu.player.Player;
 import com.xjtu.poke.Card;
 import com.xjtu.poke.PokeController;
 
 public class PlayerController {
+	private GameState gameState = GameState.CHOSE;
 	
-	
-	final private int playerCount = 3;
+	private int playerCount = 1;
+	final private int playerCountMax = 3;
 	private Player[] players = null;
 	private int first = -1;//东家
 	private int current = -1;//当前轮到谁出牌
+	private int winner = -1;
 	
 	private PokeController pokeCtrl = new PokeController();
 	
-	public void initialPlayers(){
-		
+	public GameState getGameState() {
+		return gameState;
 	}
-	
-	public void addPlayer(Player player){
-		
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
+	}
+	public int getPlayerCount() {
+		return playerCount;
+	}
+	public void setPlayerCount(int playerCount) {
+		this.playerCount = playerCount;
+	}
+	public Player[] getPlayers() {
+		return players;
+	}
+	public void setPlayers(Player[] players) {
+		this.players = players;
+	}
+	public int getFirst() {
+		return first;
+	}
+	public void setFirst(int first) {
+		this.first = first;
+	}
+	public int getCurrent() {
+		return current;
+	}
+	public void setCurrent(int current) {
+		this.current = current;
+	}
+	public int getWinner() {
+		return winner;
+	}
+	public void setWinner(int winner) {
+		this.winner = winner;
+	}
+	public PokeController getPokeCtrl() {
+		return pokeCtrl;
+	}
+	public void setPokeCtrl(PokeController pokeCtrl) {
+		this.pokeCtrl = pokeCtrl;
+	}
+	public int getPlayerCountMax() {
+		return playerCountMax;
 	}
 	public Player nextPlayer(){
-		return players[(current + 1)%3];
+		current = (current + 1)%3;
+		return players[current];
 	}
 	public Player firstPlayer(){
 		return players[first];
 	}
 	
 	public Player PrePlayer(){
-		return players[(current + 2) % 3];
+		current = (current + 2) % 3;
+		return players[current];
 	}
 	// 洗牌 发牌
 	public void suffle(){
@@ -45,7 +88,7 @@ public class PlayerController {
 		Card lCard = pokeCtrl.getLandlordCard();
 		for(int i = 0 ; i < 3; i++){
 			for(Card c:players[i].getHand()){
-				if(c.getColor() == lCard.getColor() && c.getValue() == lCard.getValue()){
+				if(c.equals(lCard)){
 					first = current = i;
 				}
 			}
@@ -58,4 +101,18 @@ public class PlayerController {
 	
 	//判断出牌是否合理
 	
+	//游戏结束    计算分数
+	public void end(){
+		if(winner == first){
+			players[first].setScore(players[first].getScore() + 10000);
+		}else{
+			current = first;
+			Player player = nextPlayer();
+			player.setScore(player.getScore() + 10000);
+			player = nextPlayer();
+			player.setScore(player.getScore() + 10000);
+		}
+		gameState = GameState.WAITNEXT;
+		
+	}
 }
