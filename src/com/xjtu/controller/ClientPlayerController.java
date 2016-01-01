@@ -1,4 +1,4 @@
-package com.xjtu.playercontroller;
+package com.xjtu.controller;
 
 public class ClientPlayerController {
 

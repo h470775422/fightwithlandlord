@@ -8,8 +8,15 @@ public abstract class Player {
 	private List<Card> hand = null;//手牌
 	private int score = 0;//积分
 	private boolean isLandlord = false;//是否地主
+	private boolean isCallLandlord = false;
 	
 	
+	public boolean isCallLandlord() {
+		return isCallLandlord;
+	}
+	public void setCallLandlord(boolean isCallLandlord) {
+		this.isCallLandlord = isCallLandlord;
+	}
 	public List<Card> getHand() {
 		return hand;
 	}

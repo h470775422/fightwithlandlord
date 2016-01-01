@@ -5,8 +5,10 @@ public enum GameState {
 		WAITCLIENT,//等待客机连接
 		SHUFFLE,//洗牌
 		DEAL,//发牌
-		CALL,//叫地主
+		CALLING,//叫地主
+		WAITCALL,
 		PLAYING,//出牌
+		WAITPLAY,
 		END,//游戏结束
 		WAITNEXT//等待下一局
 		
