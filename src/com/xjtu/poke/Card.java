@@ -9,7 +9,14 @@ public class Card implements Comparable<Card>{
 	private PokerColor color;//花色
 	private int key;//牌值
 	private int value;//大小
+	private boolean selected = false;
 	
+	public boolean isSelected() {
+		return selected;
+	}
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 	public PokerColor getColor() {
 		return color;
 	}
@@ -37,11 +44,11 @@ public class Card implements Comparable<Card>{
 	}
 	@Override
 	public int compareTo(Card arg0) {
-		if(this.getKey()<arg0.getKey()){
-			return -1;
-		}
-		if(this.getKey()>arg0.getKey()){
+		if(this.getValue()<arg0.getValue()){
 			return 1;
+		}
+		if(this.getValue()>arg0.getValue()){
+			return -1;
 		}
 		return 0;
 	}

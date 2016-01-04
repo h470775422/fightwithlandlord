@@ -1,4 +1,4 @@
-package Landlord;
+package com.xjtu.Landlord;
 
 public enum LandlordType {
 	/*********************************

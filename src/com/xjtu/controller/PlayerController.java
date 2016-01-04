@@ -1,21 +1,59 @@
 package com.xjtu.controller;
 
+import java.util.List;
+
+import com.xjtu.Landlord.RuleOfLandlord;
 import com.xjtu.gamestate.GameState;
 import com.xjtu.player.Player;
+import com.xjtu.player.RealPlayer;
 import com.xjtu.poke.Card;
 import com.xjtu.poke.PokeController;
 
 public class PlayerController {
-	private GameState gameState = GameState.CHOSE;
 	
-	private int playerCount = 1;
-	final private int playerCountMax = 3;
-	private Player[] players = null;
-	private int first = -1;//东家
-	private int current = -1;//当前轮到谁出牌
-	private int winner = -1;
+	protected GameState gameState = GameState.CHOSE;
+	//protected int playerCount = 1;
+	protected int playerCount = 0;
+	final protected int playerCountMax = 3;
+	protected Player[] players = null;
+	protected int first = -1;//东家
+	protected int current = -1;//当前轮到谁出牌
+	protected int winner = -1;
+	protected List<Card> playingCards = null;
 	
-	private PokeController pokeCtrl = new PokeController();
+	//计时器线程，用来杀死未结束的Timer线程
+	protected Thread timerThread = null;
+	private TimerThread tt = null;
+	protected int timeout=25;
+	protected PokeController pokeCtrl = new PokeController();
+	//index
+	protected int myindex = -1;
+	
+	protected RuleOfLandlord rule = new RuleOfLandlord();
+	
+	
+	
+	public Player getPlayer(int index){
+		return players[index];
+	}
+	
+	public int getMyindex() {
+		return myindex;
+	}
+	public void setMyindex(int myindex) {
+		this.myindex = myindex;
+	}
+	
+	public PlayerController() {
+		tt = new TimerThread();
+		timerThread = new Thread(tt);
+	}
+	public List<Card> getPlayingCards() {
+		return playingCards;
+	}
+	public void setPlayingCards(List<Card> playingCards) {
+		this.playingCards = playingCards;
+	}
 	
 	public GameState getGameState() {
 		return gameState;
@@ -70,17 +108,29 @@ public class PlayerController {
 		return players[first];
 	}
 	
-	public Player PrePlayer(){
+	public Player prePlayer(){
 		current = (current + 2) % 3;
 		return players[current];
 	}
 	// 洗牌 发牌
-	public void suffle(){
+	public void shuffle(){
+		
 		pokeCtrl.shuffle();
 	}
 	
 	public void deal(){
 		pokeCtrl.deal(players[0].getHand(), players[1].getHand(), players[2].getHand());
+		rule.sort(players[0].getHand());
+		rule.sort(players[1].getHand());
+		rule.sort(players[2].getHand());
+	}
+	
+	//初始化三个玩家
+	public void initialPlayers(){
+		players = new Player[3];
+		for(int i = 0; i < 3; i++){
+			players[i] = new RealPlayer();
+		}
 	}
 	
 	//看某张牌在谁手里   优先叫地主
@@ -93,6 +143,7 @@ public class PlayerController {
 				}
 			}
 		}
+		
 	}
 	
 	//轮询叫地主  first   current   landlord        abstract
@@ -114,5 +165,24 @@ public class PlayerController {
 		}
 		gameState = GameState.WAITNEXT;
 		
+	}
+	
+	//叫地主以及出牌的计时器放在这个playerController中，整个时间的计时操作都用这一个线程实现！！！
+	class TimerThread implements Runnable
+	{	
+		
+		public void run() {
+			while(timeout>0)
+			{
+				try {
+					Thread.sleep(1000);
+					timeout -= 1;
+					//System.out.println(time);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

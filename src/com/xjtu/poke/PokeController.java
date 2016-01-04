@@ -7,6 +7,8 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import com.xjtu.Landlord.RuleOfLandlord;
+
 public class PokeController 
 {
 	private Pokers pokers = new Pokers();
@@ -17,6 +19,18 @@ public class PokeController
 	
 	List<Card> pokerList = new ArrayList();
 	
+	public List<Card> getPokerList() {
+		return pokerList;
+	}
+
+	public void setPokerList(List<Card> pokerList) {
+		this.pokerList = pokerList;
+	}
+
+	public void setLastThreePokers(List<Card> lastThreePokers) {
+		this.lastThreePokers = lastThreePokers;
+	}
+
 	public PokeController()
 	{
 		//ππ‘Ï
@@ -55,14 +69,22 @@ public class PokeController
 		{
 			player_1.add(pokerList.get(index++));
 			player_2.add(pokerList.get(index++));
-			player_3.add(pokerList.get(index++));	
+			player_3.add(pokerList.get(index));	
 		}	
 		lastThreePokers.add(pokerList.get(51));
 		lastThreePokers.add(pokerList.get(52));
 		lastThreePokers.add(pokerList.get(53));
 	}
 
-	
+	public List<Card> getRandomCards(){
+		
+		List<Card> cards = new ArrayList<>();
+		for(int i = 0; i < 17; i++){
+			int a1 = random.nextInt(53);
+			cards.add(this.pokerList.get(a1));
+		}
+		return cards;
+	}
 	
 	public Pokers getPokers() {
 		return pokers;

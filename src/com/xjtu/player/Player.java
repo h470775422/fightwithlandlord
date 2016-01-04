@@ -1,14 +1,16 @@
 package com.xjtu.player;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.xjtu.poke.Card;
 
 public abstract class Player {
 
-	private List<Card> hand = null;//手牌
+	private List<Card> hand = new ArrayList<>();//手牌
 	private int score = 0;//积分
 	private boolean isCallLandlord = false;
 	private boolean isRedy = false;
+	
 	
 	
 	public boolean isCallLandlord() {
