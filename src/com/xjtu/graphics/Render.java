@@ -113,15 +113,15 @@ public class Render {
 			return -1;
 		for(int i = 0; i < size; i++){
 			if(cards.get(i).isSelected()){
-				System.out.println("选中");
+				//System.out.println("选中");
 				if((x >= x1 && x <= x2 && y >= sy1 && y <= sy2) || 
 						x >= (x1 + pokeSpan) && x <= (x1 + pokeWidth) && (y >= sy1) && y <= (sy1 + selectedSpan)){
-					System.out.println("命中1");
+					//System.out.println("命中1");
 					return i;
 				}
 			}else{
 				if(x >= x1 && x <= x2 && y >= y1 && y <= y2){
-					System.out.println("命中2");
+					//System.out.println("命中2");
 					return i;
 				}
 			}

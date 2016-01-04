@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import com.xjtu.controller.PlayerController;
+import com.xjtu.poke.Card;
 import com.xjtu.poke.PokeController;
 
 
@@ -19,6 +20,7 @@ public class RenderController implements MouseListener,MouseMotionListener{
 	private Render render = null;
 	private int index = -1,next,last;
 	private boolean mousePressed = false;
+	private List<Card> draggedCards = new ArrayList<>();
 	
 	
 	public RenderController(PlayerController playerCtrl, JPanel panel){
@@ -98,18 +100,48 @@ public class RenderController implements MouseListener,MouseMotionListener{
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		mousePressed = false;
+		if(draggedCards.size() > 0){	
+			draggedCards.clear();
+			return;
+		}
 		int x = arg0.getX(),y = arg0.getY();
-		int num = render.checkPokeClick(arg0.getX(), arg0.getY(), playerCtrl.getPlayer(index).getHand());
+		int num = render.checkPokeClick(x, y, playerCtrl.getPlayer(index).getHand());
 		if(num != -1){
-			boolean s = playerCtrl.getPlayer(index).getHand().get(num).isSelected();
-			playerCtrl.getPlayer(index).getHand().get(num).setSelected(!s);
+			boolean sel = playerCtrl.getPlayer(index).getHand().get(num).isSelected();
+			playerCtrl.getPlayer(index).getHand().get(num).setSelected(!sel);
+		}else{
+			for(Card c:playerCtrl.getPlayer(index).getHand()){
+				c.setSelected(false);
+			}
 		}
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		int x = arg0.getX(),y = arg0.getY();
-		render.checkPokeClick(arg0.getX(), arg0.getY(), playerCtrl.getPlayer(index).getHand());
+		if(mousePressed){
+			//System.out.println("鼠标按下了");
+			int num = render.checkPokeClick(x, y, playerCtrl.getPlayer(index).getHand());
+			int size = draggedCards.size();
+			if(num == -1)
+				return;
+			boolean sel = playerCtrl.getPlayer(index).getHand().get(num).isSelected();
+			if(size == 0){
+				draggedCards.add(playerCtrl.getPlayer(index).getHand().get(num));
+				
+			}else{
+				for(Card c:draggedCards){
+					if(c.equals(playerCtrl.getPlayer(index).getHand().get(num))){
+						return;
+					}
+				}
+				draggedCards.add(playerCtrl.getPlayer(index).getHand().get(num));
+			}
+			playerCtrl.getPlayer(index).getHand().get(num).setSelected(!sel);
+		}else{
+			System.out.println("鼠标松开了");
+		}
+		
 		
 	}
 
@@ -117,6 +149,7 @@ public class RenderController implements MouseListener,MouseMotionListener{
 	public void mouseMoved(MouseEvent arg0) {
 		
 	}
+		
 }
 
 
