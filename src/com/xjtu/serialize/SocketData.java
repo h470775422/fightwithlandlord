@@ -17,6 +17,7 @@ public class SocketData implements Serializable{
 	private Player[] players;//三个玩家的信息
 	private List<Card> lastThreePokers;//三张底牌
 	private GameState gameState;//游戏状态
+	private int playerCount;
 	private int first;//东家
 	private int current;//当前轮到谁出牌
 	private int winner;
@@ -24,6 +25,12 @@ public class SocketData implements Serializable{
 	private List<Card> lastCardsOnDesk;
 	
 	
+	public int getPlayerCount() {
+		return playerCount;
+	}
+	public void setPlayerCount(int playerCount) {
+		this.playerCount = playerCount;
+	}
 	public Player[] getPlayers() {
 		return players;
 	}

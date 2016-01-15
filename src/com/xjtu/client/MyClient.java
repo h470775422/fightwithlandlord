@@ -20,29 +20,28 @@ public class MyClient {
 	private static final int PORT = 9989;
 	private Socket client;
 	private PlayerController playerController = null;// 不是new，是引用
-	private int yourIndex = -1;
 
 	public MyClient(PlayerController playerController) {
 		this.playerController = playerController;
 	}
 
-	public void connect() {
+	public void connect(String ip) {
 		try {
-			client = new Socket(IP, PORT);
+			System.out.println("客户端-----连接服务器");
+			client = new Socket(ip, PORT);
+			System.out.println("客户端-----连接成功");
 			// 开启两个线程，一个接受，一个发送
-			new Thread(new GetMessage(client, playerController)).start();
 			new Thread(new SendMessage(client, playerController)).start();
-
+			new Thread(new GetMessage(client, playerController)).start();
+			System.out.println("客户端-----连接完成，pre开始游戏");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		runMainThread();
-
 	}
 
 	public void runMainThread() {
-
+		System.out.println("客户端-----连接完成，开始游戏");
 	}
 
 	class GetMessage implements Runnable// 接收消息
@@ -50,32 +49,38 @@ public class MyClient {
 		private Socket client;
 		private PlayerController pc = null;
 		private SocketData sd;
+		private ObjectInputStream ois = null;
 
 		public GetMessage(Socket client, PlayerController playerController) {
+			System.out.println("客户端-----接收线程");
 			sd = new SocketData();
 			this.pc = playerController;
 			this.client = client;
+			try {
+				ois = new ObjectInputStream(client.getInputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("客户端-----接收线程end");
 		}
 
 		@Override
 		public void run() {
-			ObjectInputStream ois = null;
 			while (true) {
 				try {
-					ois = new ObjectInputStream(client.getInputStream());
 					sd = (SocketData) ois.readObject();
 					// 用接收到的数据初始化playerController数据
-					// System.out.println("getMessage------接收数据-----------");
+					// System.out.println("客户端接受线程");
 					pc.setPlayers(sd.getPlayers());
+					pc.setPlayerCount(sd.getPlayerCount());
 					pc.setFirst(sd.getFirst());
 					pc.setCurrent(sd.getCurrent());
 					pc.setWinner(sd.getWinner());
 					pc.setGameState(sd.getGameState());
-					yourIndex = sd.getYourIndex();
+					pc.setMyindex(sd.getYourIndex());
 
 					Thread.sleep(30);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -88,30 +93,37 @@ public class MyClient {
 		private Socket client;
 		private PlayerController pc = null;
 		private SocketData2 sd;
+		private ObjectOutputStream oos = null;
 
 		public SendMessage(Socket client, PlayerController playerController) {
+			System.out.println("客户端-----发送线程");
 			sd = new SocketData2();
 			this.pc = playerController;
 			this.client = client;
+			try {
+				oos = new ObjectOutputStream(client.getOutputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("客户端-----发送线程end");
 		}
 
 		@Override
 		public void run() {
-			ObjectOutputStream oos = null;
+
 			while (true) {
 				try {
 					// 封装socketData2准备发送
-					if (yourIndex != -1) {
-						// System.out.println("sendMessage--------发送数据--------");
-						sd.setIsCallLandlord(pc.getPlayer(yourIndex).getIsCallLandlord());
+					// System.out.println("客户端发送线程");
+					if(pc.getMyindex() != -1){
+						sd.setIsCallLandlord(pc.getPlayer(pc.getMyindex()).getIsCallLandlord());
 						sd.setPlayingCards(pc.getPlayingCards());
-						sd.setReady(pc.getPlayer(yourIndex).isReady());
+						sd.setReady(pc.getPlayer(pc.getMyindex()).isReady());
 						sd.setPassCard(pc.isPassCard());
+						oos.writeObject(sd);
+						oos.flush();
+						oos.reset();
 					}
-
-					oos = new ObjectOutputStream(client.getOutputStream());
-					oos.writeObject(sd);
-
 					Thread.sleep(30);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

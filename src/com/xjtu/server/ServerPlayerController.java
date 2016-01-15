@@ -19,19 +19,19 @@ public class ServerPlayerController extends PlayerController{
 	
 	public ServerPlayerController(){
 		server=new Server(this);
-		
+		startServer();
 	}
 	public void startServer(){
 		//并将游戏状态设为等待
-		
 		gameState=GameState.WAITCLIENT;
 		//实例化初始值  把本机设置为第一个玩家 并将count值设置为1	 isReady 设置为true
 	//	this.getPlayers()[this.playerCount]=this.firstPlayer();
 	//  this.setPlayers(this.getPlayers());
-		
-		players[playerCount++]=new RealPlayer();
+		initialPlayers();
+		//players[playerCount++]=new RealPlayer();
 		players[0].setReady(true);
-		
+		myindex = 0;
+		playerCount++;
 		//开启服务器  等待客户端连接
 		server.startServer(port);
 		

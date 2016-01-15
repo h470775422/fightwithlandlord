@@ -23,33 +23,23 @@ public class Server {
 	}
 
 	public void startServer(int port) {
-		// TODO Auto-generated method stub
 		try {
 
 			serversocket = new ServerSocket(port);
-
+			System.out.println("服务端-----进入等待线程");
 			new Thread() {
 				public void run() {
 					try {
-
-						if (pc.getPlayerCount() < pc.getPlayerCountMax()) {
-
-							try {
-								Thread.sleep(3000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+						while (pc.getPlayerCount() < pc.getPlayerCountMax()) {
 							socket = serversocket.accept();
-
 							if (socket != null) {
+								System.out.println("服务端-----有客户进入");
 								new Thread(new receiveFormClient(socket, pc, pc.getPlayerCount())).start();
 								new Thread(new sendToClient(socket, pc, pc.getPlayerCount())).start();
 							}
 							pc.setPlayerCount(pc.getPlayerCount() + 1);
 						}
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -57,7 +47,6 @@ public class Server {
 			}.start();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -72,13 +61,13 @@ public class Server {
 		private SocketData socketdata;
 
 		public sendToClient(Socket socket, PlayerController pc, int index) {
+			System.out.println(index);
 			this.index = index;
 			this.socket = socket;
 			socketdata = new SocketData();
 			try {
 				oos = new ObjectOutputStream(this.socket.getOutputStream());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -89,6 +78,7 @@ public class Server {
 				try {
 					// 有客户端连接，开始发送消息给客户端 -->内容：1.对应index
 					socketdata.setYourIndex(index);
+					socketdata.setPlayerCount(pc.getPlayerCount());
 					socketdata.setLastThreePokers(pc.getPokeCtrl().getLastThreePokers());
 					socketdata.setPlayers(pc.getPlayers());
 					socketdata.setFirst(pc.getFirst());
@@ -98,6 +88,8 @@ public class Server {
 					socketdata.setLastCardsOnDesk(pc.getPlayingCards());
 
 					oos.writeObject(socketdata);
+					oos.flush();
+					oos.reset();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

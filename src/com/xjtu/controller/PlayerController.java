@@ -16,7 +16,7 @@ public class PlayerController {
 	// protected int playerCount = 1;
 	protected int playerCount = 0;
 	final protected int playerCountMax = 3;
-	protected Player[] players = null;
+	protected Player[] players = new Player[3];
 	protected int first = -1;// 东家
 	protected int current = -1;// 当前轮到谁出牌
 	protected int winner = -1;
@@ -326,7 +326,9 @@ public class PlayerController {
 	 * 等待客户端连接
 	 */
 	public void waitClientConnect() {
+		System.out.println(players[0].isReady() + "...." + players[1].isReady() + "...." + players[2].isReady());
 		if (players[0].isReady() && players[1].isReady() && players[2].isReady()) {
+			System.out.println("洗牌开始");
 			gameState = GameState.SHUFFLE;
 		}
 	}

@@ -1,8 +1,10 @@
 package com.xjtu.poke;
 
+import java.io.Serializable;
+
 import org.junit.Test;
 
-public class Card implements Comparable<Card>{
+public class Card implements Comparable<Card>,Serializable{
 	public  enum PokerColor
 	{
 		HEART,SPADE,CLUB,DIAMOND,JOKER_SMALL,JOKER_BIG

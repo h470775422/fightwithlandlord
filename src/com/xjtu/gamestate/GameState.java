@@ -1,6 +1,8 @@
 package com.xjtu.gamestate;
 
-public enum GameState {
+import java.io.Serializable;
+
+public enum GameState implements Serializable{
 		CHOSE,//选择界面
 		WAITCLIENT,//等待客机连接
 		SHUFFLE,//洗牌

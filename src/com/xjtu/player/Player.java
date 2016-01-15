@@ -1,12 +1,13 @@
 package com.xjtu.player;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.xjtu.gamestate.GameState;
 import com.xjtu.poke.Card;
 
-public abstract class Player {
+public abstract class Player implements Serializable{
 
 	protected List<Card> hand = null;// ÊÖÅÆ
 	protected int score = 0;// »ý·Ö

@@ -22,7 +22,7 @@ public class MyFrame extends JFrame {
 		this.setTitle("¶·µØÖ÷");
 		
 		start();
-		//gameMain();
+		
 		this.setBounds(100, 100, 1600, 900);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
@@ -35,13 +35,23 @@ public class MyFrame extends JFrame {
 		startPanel = new StartPanel(this);
 		Container c = this.getContentPane();
 		c.add(startPanel);
+		revalidate();
 	}
 	
-	public void gameMain(){
-		mainPanel = new MainPanel();
+	public void serverMain(){
+		mainPanel = new MainPanel(1,null);
 		Container c = this.getContentPane();
-		//c.remove(startPanel);
+		c.remove(startPanel);
 		c.add(mainPanel);
+		revalidate();
+	}
+	
+	public void clientMain(String ip){
+		mainPanel = new MainPanel(2,ip);
+		Container c = this.getContentPane();
+		c.remove(startPanel);
+		c.add(mainPanel);
+		revalidate();
 	}
 
 	public static void main(String[] args) {
