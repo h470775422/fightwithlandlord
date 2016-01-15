@@ -1,5 +1,7 @@
 package com.xjtu.poke;
 
+import org.junit.Test;
+
 public class Card implements Comparable<Card>{
 	public  enum PokerColor
 	{

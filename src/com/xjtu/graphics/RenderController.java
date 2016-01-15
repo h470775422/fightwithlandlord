@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import org.junit.Test;
+
 import com.xjtu.controller.PlayerController;
 import com.xjtu.poke.Card;
 import com.xjtu.poke.PokeController;
@@ -150,6 +152,7 @@ public class RenderController implements MouseListener,MouseMotionListener{
 		
 	}
 		
+
 }
 
 

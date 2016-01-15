@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import org.junit.Test;
+
 import com.xjtu.poke.Card;
 
 
@@ -18,6 +20,7 @@ public class Render {
 	private Image tableImage = null;
 	private JPanel panel = null;
 
+	
 	
 //	private final int keyX = 129, keyY = 129,keyW = 30,keyH = 23;
 //	private final int colorX = 218, colorY = 246,colorW = 20,colorH = 16;
