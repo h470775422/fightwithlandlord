@@ -53,32 +53,35 @@ public class MyClient {
 
 		public GetMessage(Socket client, PlayerController playerController) {
 			System.out.println("客户端-----接收线程");
-			sd = new SocketData();
 			this.pc = playerController;
-			this.client = client;
-			try {
-				ois = new ObjectInputStream(client.getInputStream());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			this.client = client;	
 			System.out.println("客户端-----接收线程end");
 		}
 
 		@Override
 		public void run() {
+			//sd = new SocketData();
+			try {
+				ois = new ObjectInputStream(client.getInputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			while (true) {
 				try {
 					sd = (SocketData) ois.readObject();
 					// 用接收到的数据初始化playerController数据
 					// System.out.println("客户端接受线程");
-					pc.setPlayers(sd.getPlayers());
+					int myIndex = sd.getYourIndex();
 					pc.setPlayerCount(sd.getPlayerCount());
 					pc.setFirst(sd.getFirst());
 					pc.setCurrent(sd.getCurrent());
 					pc.setWinner(sd.getWinner());
 					pc.setGameState(sd.getGameState());
-					pc.setMyindex(sd.getYourIndex());
-
+					pc.setMyindex(myIndex);
+					for(int i = 0; i < 3; i++){
+						if(i != myIndex)
+							pc.setPlayer(i, sd.getPlayers()[i]);
+					}
 					Thread.sleep(30);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -96,26 +99,26 @@ public class MyClient {
 		private ObjectOutputStream oos = null;
 
 		public SendMessage(Socket client, PlayerController playerController) {
-			System.out.println("客户端-----发送线程");
-			sd = new SocketData2();
+			System.out.println("客户端-----发送线程");	
 			this.pc = playerController;
 			this.client = client;
-			try {
-				oos = new ObjectOutputStream(client.getOutputStream());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			System.out.println("客户端-----发送线程end");
 		}
 
 		@Override
 		public void run() {
-
+			sd = new SocketData2();
+			try {
+				oos = new ObjectOutputStream(client.getOutputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			while (true) {
 				try {
 					// 封装socketData2准备发送
 					// System.out.println("客户端发送线程");
 					if(pc.getMyindex() != -1){
+						//
 						sd.setIsCallLandlord(pc.getPlayer(pc.getMyindex()).getIsCallLandlord());
 						sd.setPlayingCards(pc.getPlayingCards());
 						sd.setReady(pc.getPlayer(pc.getMyindex()).isReady());

@@ -41,6 +41,10 @@ public class PlayerController {
 		return players[index];
 	}
 
+	public void setPlayer(int index, Player player) {
+		this.players[index] = player;
+	}
+
 	public int getMyindex() {
 		return myindex;
 	}
@@ -151,6 +155,7 @@ public class PlayerController {
 	 * 构造函数
 	 */
 	public PlayerController() {
+		initialPlayers();
 		tt = new TimerThread();
 		timerThread = new Thread(tt);
 	}
@@ -201,8 +206,14 @@ public class PlayerController {
 				end();
 				break;
 			case WAITNEXT:
-
 				break;
+			default:
+				break;
+			}
+			try {
+				Thread.sleep(30);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -218,6 +229,7 @@ public class PlayerController {
 	 * 发牌
 	 */
 	public void deal() {
+		System.out.println("deal pokes");
 		pokeCtrl.deal(players[0].getHand(), players[1].getHand(), players[2].getHand());
 	}
 
@@ -225,7 +237,6 @@ public class PlayerController {
 	 * 初始化三个玩家
 	 */
 	public void initialPlayers() {
-		players = new Player[3];
 		for (int i = 0; i < 3; i++) {
 			players[i] = new RealPlayer();
 		}
@@ -326,7 +337,8 @@ public class PlayerController {
 	 * 等待客户端连接
 	 */
 	public void waitClientConnect() {
-		System.out.println(players[0].isReady() + "...." + players[1].isReady() + "...." + players[2].isReady());
+		// System.out.println(players[0].isReady() + "...." +
+		// players[1].isReady() + "...." + players[2].isReady());
 		if (players[0].isReady() && players[1].isReady() && players[2].isReady()) {
 			System.out.println("洗牌开始");
 			gameState = GameState.SHUFFLE;
@@ -409,6 +421,28 @@ public class PlayerController {
 				}
 			}
 		}
+	}
+
+	protected class MonitorThread implements Runnable {
+		private PlayerController pc = null;
+
+		public MonitorThread(PlayerController pc) {
+			this.pc = pc;
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				System.out.println(pc.getGameState() + " " + pc.getPlayer(0).isReady() + " " + pc.getPlayer(1).isReady()
+						+ " " + pc.getPlayer(2).isReady());
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 
 }

@@ -18,16 +18,20 @@ public class MyFrame extends JFrame {
 
 	private MainPanel mainPanel = null;
 	private StartPanel startPanel = null;
+	
+	private final int width = 800;
+	private final int height = 600;
 	public MyFrame() {
 		this.setTitle("¶·µØÖ÷");
 		
-		start();
 		
-		this.setBounds(100, 100, 1600, 900);
+		
+		this.setBounds(100, 100, width, height);
+		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
 		this.setVisible(true);
-		
+		start();
 		
 	}
 	
@@ -39,7 +43,7 @@ public class MyFrame extends JFrame {
 	}
 	
 	public void serverMain(){
-		mainPanel = new MainPanel(1,null);
+		mainPanel = new MainPanel(1,null,width,height);
 		Container c = this.getContentPane();
 		c.remove(startPanel);
 		c.add(mainPanel);
@@ -47,7 +51,7 @@ public class MyFrame extends JFrame {
 	}
 	
 	public void clientMain(String ip){
-		mainPanel = new MainPanel(2,ip);
+		mainPanel = new MainPanel(2,ip,width,height);
 		Container c = this.getContentPane();
 		c.remove(startPanel);
 		c.add(mainPanel);

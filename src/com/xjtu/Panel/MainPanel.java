@@ -34,73 +34,81 @@ public class MainPanel extends JPanel implements Runnable, ActionListener {
 
 	private RenderController renderCtrl = null;
 	private PlayerController playerCtrl = null;
-	
+
 	private JButton readyBtn = null;
 
-	public MainPanel(int index,String ip) {
-		if(index == 1){//server
+	private int width;
+	private int height;
+
+	public MainPanel(int index, String ip, int width, int height) {
+		this.width = width;
+		this.height = height;
+		if (index == 1) {// server
 			initialServerFunc();
-		}else if(index == 2){//client
+		} else if (index == 2) {// client
 			initialClientFunc(ip);
-		}else if(index == 3){//AI
-			
+		} else if (index == 3) {// AI
+
 		}
-		repaint();
+		// repaint();
 	}
 
 	/*******************
 	 * 初始化游戏主线程
 	 */
-//	private void initialMainFunc() {
-//		playerCtrl = new ServerPlayerController();
-//		playerCtrl.setFirst(0);
-//		playerCtrl.setMyindex(1);
-//		playerCtrl.initialPlayers();
-//		playerCtrl.shuffle();
-//		playerCtrl.deal();
-//		playerCtrl.setGameState(GameState.PLAYING);
-//		renderCtrl = new RenderController(playerCtrl, this);
-//		this.addMouseListener(renderCtrl);
-//		this.addMouseMotionListener(renderCtrl);
-//		
-//		Thread t = new Thread(this);
-//		t.start();
-//	}
-	
-	private void initialOther(){
-		renderCtrl = new RenderController(playerCtrl, this);
+	// private void initialMainFunc() {
+	// playerCtrl = new ServerPlayerController();
+	// playerCtrl.setFirst(0);
+	// playerCtrl.setMyindex(1);
+	// playerCtrl.initialPlayers();
+	// playerCtrl.shuffle();
+	// playerCtrl.deal();
+	// playerCtrl.setGameState(GameState.PLAYING);
+	// renderCtrl = new RenderController(playerCtrl, this);
+	// this.addMouseListener(renderCtrl);
+	// this.addMouseMotionListener(renderCtrl);
+	//
+	// Thread t = new Thread(this);
+	// t.start();
+	// }
+
+	private void initialOther() {
+		renderCtrl = new RenderController(playerCtrl, this,width,height);
 		this.addMouseListener(renderCtrl);
 		this.addMouseMotionListener(renderCtrl);
 		Thread t = new Thread(this);
 		t.start();
 	}
 
-	public void initialClientFunc(String ip){
+	public void initialClientFunc(String ip) {
 		System.out.println("客户端启动");
 		playerCtrl = new ClientPlayerController(ip);
-		
+
 		setLayout(null);
 		readyBtn = new JButton("准备");
-		readyBtn.setBounds(550,550,70,30);
+		readyBtn.setBounds(width / 2 - 200, height / 2, 70, 30);
 		readyBtn.setActionCommand("ready");
 		readyBtn.addActionListener(this);
 		add(readyBtn);
 		repaint();
 		initialOther();
 	}
-	public void initialServerFunc(){
+
+	public void initialServerFunc() {
 		System.out.println("服务器启动");
 		playerCtrl = new ServerPlayerController();
 		initialOther();
 	}
+
 	@Override
 	public void paint(Graphics g) {
-		//g.clearRect(0, 0, this.getWidth(), this.getHeight());
+		// g.clearRect(0, 0, this.getWidth(), this.getHeight());
 		super.paint(g);
 		renderCtrl.drawAll(g);
-		/*if(readyBtn != null)
-			readyBtn.repaint();*/
-		
+		/*
+		 * if(readyBtn != null) readyBtn.repaint();
+		 */
+
 	}
 
 	@Override
@@ -118,11 +126,12 @@ public class MainPanel extends JPanel implements Runnable, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(arg0.getActionCommand().equals("ready")){
+		if (arg0.getActionCommand().equals("ready")) {
 			System.out.println("我要准备" + playerCtrl.getMyindex() + "号");
 			playerCtrl.getPlayer(playerCtrl.getMyindex()).setReady(true);
+			readyBtn.setEnabled(false);
 		}
-		
+
 	}
 
 }

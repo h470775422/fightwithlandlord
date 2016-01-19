@@ -64,19 +64,20 @@ public class Server {
 			System.out.println(index);
 			this.index = index;
 			this.socket = socket;
+		}
+
+		@Override
+		public void run() {
 			socketdata = new SocketData();
 			try {
 				oos = new ObjectOutputStream(this.socket.getOutputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-
-		@Override
-		public void run() {
 			while (true) {
 				try {
 					// 有客户端连接，开始发送消息给客户端 -->内容：1.对应index
+					//
 					socketdata.setYourIndex(index);
 					socketdata.setPlayerCount(pc.getPlayerCount());
 					socketdata.setLastThreePokers(pc.getPokeCtrl().getLastThreePokers());
@@ -90,6 +91,7 @@ public class Server {
 					oos.writeObject(socketdata);
 					oos.flush();
 					oos.reset();
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -116,15 +118,17 @@ public class Server {
 			this.socket = socket;
 			this.pc = pc;
 			this.index = index;
+			
+		}
+
+		@Override
+		public void run() {
+			//socketdata2 = new SocketData2();
 			try {
 				ois = new ObjectInputStream(this.socket.getInputStream());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-
-		@Override
-		public void run() {
 			while (true) {
 				try {
 					socketdata2 = (SocketData2) ois.readObject();

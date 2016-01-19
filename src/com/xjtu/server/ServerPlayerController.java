@@ -18,6 +18,7 @@ public class ServerPlayerController extends PlayerController{
 	
 	
 	public ServerPlayerController(){
+		new Thread(new MonitorThread(this)).start();
 		server=new Server(this);
 		startServer();
 	}
@@ -27,7 +28,7 @@ public class ServerPlayerController extends PlayerController{
 		//实例化初始值  把本机设置为第一个玩家 并将count值设置为1	 isReady 设置为true
 	//	this.getPlayers()[this.playerCount]=this.firstPlayer();
 	//  this.setPlayers(this.getPlayers());
-		initialPlayers();
+		//initialPlayers();
 		//players[playerCount++]=new RealPlayer();
 		players[0].setReady(true);
 		myindex = 0;
@@ -37,16 +38,9 @@ public class ServerPlayerController extends PlayerController{
 		
 		new Thread(){
 			public void run() {
-				while(true){
 					runMain();
-					try {
-						Thread.sleep(30);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 				}
-			};
-		}.start();;
+		}.start();
 		}
 }
 

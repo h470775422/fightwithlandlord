@@ -24,12 +24,17 @@ public class RenderController implements MouseListener, MouseMotionListener {
 	private boolean mousePressed = false;
 	private List<Card> draggedCards = new ArrayList<>();
 
-	public RenderController(PlayerController playerCtrl, JPanel panel) {
+	private int width;
+	private int height;
+
+	public RenderController(PlayerController playerCtrl, JPanel panel, int width, int height) {
 		this.playerCtrl = playerCtrl;
 		render = new Render(panel);
 		index = playerCtrl.getMyindex();
 		next = (index + 1) % 3;
 		last = (next + 1) % 3;
+		this.width = width;
+		this.height = height;
 	}
 
 	public void initialPokePanel() {
@@ -76,12 +81,12 @@ public class RenderController implements MouseListener, MouseMotionListener {
 			readyCount++;
 		str += "...." + readyCount + "个玩家已准备";
 		str += "..............我的编号" + playerCtrl.getMyindex();
-		g.drawString(str, 440, 520);
+		g.drawString(str, width / 2 - 200, height / 2 - 50);
 	}
 
 	public void drawShuffle(Graphics g) {
 		String str = "洗牌中 请耐心等待";
-		g.drawString(str, 300, 400);
+		g.drawString(str, width / 2 - 200, height / 2 - 50);
 	}
 
 	public void drawTable(Graphics g) {
