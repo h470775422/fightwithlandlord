@@ -79,8 +79,12 @@ public class MyClient {
 					pc.setGameState(sd.getGameState());
 					pc.setMyindex(myIndex);
 					for(int i = 0; i < 3; i++){
-						if(i != myIndex)
+						if(i != myIndex){
 							pc.setPlayer(i, sd.getPlayers()[i]);
+						}else{
+							pc.getPlayer(myIndex).setHand(sd.getPlayers()[myIndex].getHand());
+							pc.getPlayer(myIndex).setScore(sd.getPlayers()[myIndex].getScore());
+						}
 					}
 					Thread.sleep(30);
 				} catch (Exception e) {
@@ -129,7 +133,7 @@ public class MyClient {
 					}
 					Thread.sleep(30);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			}

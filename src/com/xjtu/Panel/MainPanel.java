@@ -39,10 +39,13 @@ public class MainPanel extends JPanel implements Runnable, ActionListener {
 
 	private int width;
 	private int height;
+	
+	private int gameModel;
 
 	public MainPanel(int index, String ip, int width, int height) {
 		this.width = width;
 		this.height = height;
+		this.gameModel = index;
 		if (index == 1) {// server
 			initialServerFunc();
 		} else if (index == 2) {// client
@@ -73,7 +76,7 @@ public class MainPanel extends JPanel implements Runnable, ActionListener {
 	// }
 
 	private void initialOther() {
-		renderCtrl = new RenderController(playerCtrl, this,width,height);
+		renderCtrl = new RenderController(playerCtrl, this, width, height);
 		this.addMouseListener(renderCtrl);
 		this.addMouseMotionListener(renderCtrl);
 		Thread t = new Thread(this);
@@ -109,6 +112,12 @@ public class MainPanel extends JPanel implements Runnable, ActionListener {
 		 * if(readyBtn != null) readyBtn.repaint();
 		 */
 
+	}
+	
+	public void unloadReadyBtn(){
+		if(gameModel == 2){
+			this.remove(readyBtn);
+		}
 	}
 
 	@Override

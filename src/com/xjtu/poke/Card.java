@@ -14,6 +14,7 @@ public class Card implements Comparable<Card>,Serializable{
 	private int key;//牌值
 	private int value;//大小
 	private boolean selected = false;
+
 	
 	public boolean isSelected() {
 		return selected;
@@ -58,4 +59,8 @@ public class Card implements Comparable<Card>,Serializable{
 	}
 	
 
+	@Override
+	public String toString(){
+		return "花色:" + color + ",牌面:" + key;
+	}
 }

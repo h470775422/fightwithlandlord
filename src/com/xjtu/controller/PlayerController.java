@@ -170,20 +170,10 @@ public class PlayerController {
 				waitClientConnect();
 				break;
 			case SHUFFLE:
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				shuffle();
 				gameState = GameState.DEAL;
 				break;
 			case DEAL:
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				deal();// 地主三张牌的保存
 				gameState = GameState.CALLING;
 				break;
@@ -210,11 +200,7 @@ public class PlayerController {
 			default:
 				break;
 			}
-			try {
-				Thread.sleep(30);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			sleep(30);
 		}
 	}
 
@@ -222,6 +208,7 @@ public class PlayerController {
 	 * 洗牌
 	 */
 	public void shuffle() {
+		sleep(2000);
 		pokeCtrl.shuffle();
 	}
 
@@ -229,6 +216,7 @@ public class PlayerController {
 	 * 发牌
 	 */
 	public void deal() {
+		sleep(2000);
 		System.out.println("deal pokes");
 		pokeCtrl.deal(players[0].getHand(), players[1].getHand(), players[2].getHand());
 	}
@@ -413,36 +401,25 @@ public class PlayerController {
 	private class TimerThread implements Runnable {
 		public void run() {
 			while (timeout > 0) {
-				try {
-					Thread.sleep(1000);
-					timeout -= 1;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				sleep(1000);
+				timeout -= 1;
 			}
 		}
 	}
 
-	protected class MonitorThread implements Runnable {
-		private PlayerController pc = null;
-
-		public MonitorThread(PlayerController pc) {
-			this.pc = pc;
+	/********************
+	 * sleep
+	 * 
+	 * @param mil
+	 */
+	protected void sleep(long mil) {
+		try {
+			Thread.sleep(mil);
+		} catch (InterruptedException e) {
+			System.err.println("han:sleep thread error！");
+			e.printStackTrace();
 		}
-
-		@Override
-		public void run() {
-			while (true) {
-				System.out.println(pc.getGameState() + " " + pc.getPlayer(0).isReady() + " " + pc.getPlayer(1).isReady()
-						+ " " + pc.getPlayer(2).isReady());
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
 	}
+
 
 }

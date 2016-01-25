@@ -5,36 +5,54 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JPanel;
 
 import org.junit.Test;
 
+import com.xjtu.Panel.MainPanel;
 import com.xjtu.controller.PlayerController;
 import com.xjtu.gamestate.GameState;
 import com.xjtu.poke.Card;
 import com.xjtu.poke.PokeController;
 
 public class RenderController implements MouseListener, MouseMotionListener {
+	private MainPanel panel = null;
 	private PokeController pokeCtrl;
 	private PlayerController playerCtrl = null;
 	private Render render = null;
 	private int index = -1, next, last;
 	private boolean mousePressed = false;
 	private List<Card> draggedCards = new ArrayList<>();
-
+	private boolean[] selected = new boolean[20];
+	
 	private int width;
 	private int height;
 
-	public RenderController(PlayerController playerCtrl, JPanel panel, int width, int height) {
+	private Date date;
+	private long lastTime;
+
+	private int pointCount = 0;
+	private final String shuffleStrFinal = "洗牌中 请耐心等待";
+	private String shuffleStr = shuffleStrFinal;
+	private final String dealStrFinal = "发牌中";
+	private String dealStr = dealStrFinal;
+
+	public RenderController(PlayerController playerCtrl, MainPanel panel, int width, int height) {
 		this.playerCtrl = playerCtrl;
-		render = new Render(panel);
+		this.panel = panel;
+		render = new Render(panel, width, height);
 		index = playerCtrl.getMyindex();
 		next = (index + 1) % 3;
-		last = (next + 1) % 3;
+		last = (index + 2) % 3;
 		this.width = width;
 		this.height = height;
+		date = new Date();
+		lastTime = date.getTime();
+		
+		
 	}
 
 	public void initialPokePanel() {
@@ -52,10 +70,16 @@ public class RenderController implements MouseListener, MouseMotionListener {
 			drawShuffle(g);
 			break;
 		case DEAL:
+			drawDeal(g);
 			break;
 		case CALLING:
+			unloadReadyButton();
+			drawTable(g);
+			drawPoke(g);
 			break;
 		case WAITCALL:
+			drawTable(g);
+			drawPoke(g);
 			break;
 		case PLAYING:
 			drawTable(g);
@@ -70,7 +94,12 @@ public class RenderController implements MouseListener, MouseMotionListener {
 		}
 	}
 
-	public void drawWaitClient(Graphics g) {
+	/************************
+	 * 绘制等待玩家
+	 * 
+	 * @param g
+	 */
+	private void drawWaitClient(Graphics g) {
 		String str = "当前玩家数:" + (playerCtrl.getPlayerCount());
 		int readyCount = 0;
 		if (playerCtrl.getPlayer(0).isReady())
@@ -84,27 +113,85 @@ public class RenderController implements MouseListener, MouseMotionListener {
 		g.drawString(str, width / 2 - 200, height / 2 - 50);
 	}
 
-	public void drawShuffle(Graphics g) {
-		String str = "洗牌中 请耐心等待";
-		g.drawString(str, width / 2 - 200, height / 2 - 50);
+	/******************
+	 * 绘制洗牌
+	 * 
+	 * @param g
+	 */
+	private void drawShuffle(Graphics g) {
+		if (calTimeSpan(500)) {
+			shuffleStr += ".";
+			pointCount = (pointCount + 1) % 3;
+			if (pointCount == 0)
+				shuffleStr = shuffleStrFinal;
+		}
+		g.drawString(shuffleStr, width / 2 - 200, height / 2 - 50);
 	}
 
-	public void drawTable(Graphics g) {
+	/********************
+	 * 绘制发牌
+	 * 
+	 * @param g
+	 */
+	private void drawDeal(Graphics g) {
+		if (calTimeSpan(500)) {
+			dealStr += ".";
+			pointCount = (pointCount + 1) % 3;
+			if (pointCount == 0)
+				dealStr = dealStrFinal;
+		}
+		g.drawString(dealStr, width / 2 - 200, height / 2 - 50);
+	}
+
+	public void unloadReadyButton() {
+		panel.unloadReadyBtn();
+	}
+
+	/******************
+	 * 绘制桌面背景
+	 * 
+	 * @param g
+	 */
+	private void drawTable(Graphics g) {
 		render.drawTable(g);
 	}
 
-	public void drawPoke(Graphics g) {
-		render.drawMyself(g, playerCtrl.getPlayer(index).getHand());
+	/******************
+	 * 绘制三方的牌
+	 * 
+	 * @param g
+	 */
+	private void drawPoke(Graphics g) {
+		g.drawString(index +":"+playerCtrl.getPlayer(index).getHand().size(), width/2, 400);
+		render.drawMyself(g, playerCtrl.getPlayer(index).getHand(),selected);
 		render.drawRight(g, playerCtrl.getPlayer(next).getHand());
 		render.drawLeft(g, playerCtrl.getPlayer(last).getHand());
-	}
-
-	public void drawPokeOnDesktop(Graphics g) {
 
 	}
 
-	public void drawThreeLandlordPokes(Graphics g) {
+	private void drawPokeOnDesktop(Graphics g) {
 
+	}
+
+	private void drawThreeLandlordPokes(Graphics g) {
+
+	}
+
+	/******************
+	 * 计算时间差
+	 * 
+	 * @param timeSpan
+	 * @return
+	 */
+	public boolean calTimeSpan(long timeSpan) {
+		date = new Date();
+		long currentTime = date.getTime();
+		// System.out.println("cur" + currentTime + "," + "last" + lastTime);
+		if (currentTime - lastTime > timeSpan) {
+			lastTime = currentTime;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -129,7 +216,8 @@ public class RenderController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		if (playerCtrl.getGameState() == GameState.WAITPLAY) {
+		if (playerCtrl.getGameState() == GameState.WAITPLAY || 
+				playerCtrl.getGameState() == GameState.WAITCALL) {
 			mousePressed = false;
 			if (draggedCards.size() > 0) {
 				draggedCards.clear();
@@ -140,9 +228,12 @@ public class RenderController implements MouseListener, MouseMotionListener {
 			if (num != -1) {
 				boolean sel = playerCtrl.getPlayer(index).getHand().get(num).isSelected();
 				playerCtrl.getPlayer(index).getHand().get(num).setSelected(!sel);
+				selected[num] = !selected[num];
 			} else {
+				int i = 0;
 				for (Card c : playerCtrl.getPlayer(index).getHand()) {
 					c.setSelected(false);
+					selected[i++] = false;
 				}
 			}
 		}
@@ -171,6 +262,7 @@ public class RenderController implements MouseListener, MouseMotionListener {
 					draggedCards.add(playerCtrl.getPlayer(index).getHand().get(num));
 				}
 				playerCtrl.getPlayer(index).getHand().get(num).setSelected(!sel);
+				selected[num] = !selected[num];
 			} else {
 				System.out.println("鼠标松开了");
 			}
@@ -179,7 +271,7 @@ public class RenderController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-
+		//System.out.println("X:" + arg0.getX() + ",Y:" + arg0.getY());
 	}
 
 }

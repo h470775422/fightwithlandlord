@@ -70,7 +70,7 @@ public class StartPanel extends JPanel implements Runnable, ActionListener {
 		labelIP = new JLabel("请输入IP:");
 		labelIP.setBounds(width / 2 - 200, height / 2 + 100, 60, 30);
 		textIP = new JTextField();
-		textIP.setText("192.168.1.107");
+		textIP.setText("192.168.1.24");
 		textIP.setBounds(width / 2 - 130, height / 2 + 100, 180, 30);
 		clientBtn = new JButton("连接主机");
 		clientBtn.setBounds(width / 2 + 50, height / 2 + 100, 100, 30);

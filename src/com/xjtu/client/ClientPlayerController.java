@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.xjtu.controller.PlayerController;
 import com.xjtu.gamestate.GameState;
+import com.xjtu.monitor.MonitorThread;
 import com.xjtu.player.Player;
 import com.xjtu.poke.Card;
 import com.xjtu.serialize.SocketData;
@@ -19,6 +20,7 @@ public class ClientPlayerController extends PlayerController {
 	private String ip;
 
 	public ClientPlayerController(String ip) {
+		new Thread(new MonitorThread(this)).start();
 		this.ip = ip;
 		client = new MyClient(this);
 		connect();

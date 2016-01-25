@@ -19,14 +19,14 @@ public class MyFrame extends JFrame {
 	private MainPanel mainPanel = null;
 	private StartPanel startPanel = null;
 	
-	private final int width = 800;
-	private final int height = 600;
+	private final int width = 1200;
+	private final int height = 700;
 	public MyFrame() {
 		this.setTitle("¶·µØÖ÷");
 		
 		
 		
-		this.setBounds(100, 100, width, height);
+		this.setBounds(80, 10, width, height);
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setResizable(false);
